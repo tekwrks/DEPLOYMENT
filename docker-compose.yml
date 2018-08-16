@@ -1,0 +1,65 @@
+version: '3'
+services:
+
+  proxy:
+    image: quackup/proxy:1.0.0
+    ports:
+      - "127.0.0.1:3000:80"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf:ro"
+    networks:
+      - webnet
+
+  website:
+    image: quackup/website:1.0.0
+    networks:
+      - webnet
+
+  # renderer:
+  #   image: quackup/renderer:1.0.0
+  #   networks:
+  #     - intranet
+
+  login:
+    image: quackup/login:1.0.0
+    # ports:
+    #   - "127.0.0.1:7000:7000"
+    env_file:
+      - login.env
+    networks:
+      - dbnet
+      - webnet
+      - intranet
+
+  email:
+    image: quackup/email:1.0.0
+    env_file:
+      - email.env
+    networks:
+      - intranet
+
+  db:
+    image: quackup/db:1.0.0
+    ports:
+      - "127.0.0.1:27017:27017"
+    env_file:
+      - db.env
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    volumes:
+      - "/data/quackup/db:/data/db"
+      - "/data/quackup/configdb:/data/configdb"
+    networks:
+      - dbnet
+
+networks:
+
+  intranet:
+    driver: bridge
+
+  webnet:
+    driver: bridge
+
+  dbnet:
+    driver: bridge
