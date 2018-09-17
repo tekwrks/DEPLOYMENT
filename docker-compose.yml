@@ -4,7 +4,7 @@ services:
   proxy:
     image: quackup/proxy:1.0.0
     ports:
-      - "127.0.0.1:3000:80"
+      - "3000:80"
     volumes:
       - "./nginx.conf:/etc/nginx/nginx.conf:ro"
     networks:
@@ -22,10 +22,10 @@ services:
 
   login:
     image: quackup/login:1.0.0
-    # ports:
-    #   - "127.0.0.1:7000:7000"
     env_file:
       - login.env
+    # environment:
+    #   - NODE_ENV=development
     networks:
       - dbnet
       - webnet
@@ -41,7 +41,7 @@ services:
   db:
     image: quackup/db:1.0.0
     ports:
-      - "127.0.0.1:27017:27017"
+      - "27017:27017"
     env_file:
       - db.env
     deploy:
@@ -56,10 +56,10 @@ services:
 networks:
 
   intranet:
-    driver: bridge
+    driver: overlay
 
   webnet:
-    driver: bridge
+    driver: overlay
 
   dbnet:
-    driver: bridge
+    driver: overlay
