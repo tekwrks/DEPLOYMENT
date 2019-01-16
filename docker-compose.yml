@@ -22,8 +22,6 @@ services:
     image: ${REPO:?err}/renderer:1.0.0
     networks:
       - intranet
-    deploy:
-      replicas: 1
 
   login:
     hostname: login
@@ -34,8 +32,6 @@ services:
       - dbnet
       - webnet
       - intranet
-    deploy:
-      replicas: 1
 
   user:
     hostname: user
@@ -45,8 +41,6 @@ services:
     networks:
       - dbnet
       - webnet
-    deploy:
-      replicas: 1
 
   email:
     hostname: email
@@ -55,13 +49,10 @@ services:
       - email.env
     networks:
       - intranet
-    deploy:
-      restart_policy:
-        condition: any
 
   database:
     hostname: database
-    image: ${REPO:?err}/database:1.0.0
+    image: mongo:4.0.5-xenial
     ports:
       - "27017:27017"
     env_file:
