@@ -75,6 +75,24 @@ services:
       placement:
         constraints: [node.role == manager]
 
+  msgstore:
+    hostname: msgstore
+    image: ipfs/go-ipfs:release
+    ports:
+      - "4001:4001"
+      - "8080:8080"
+      - "5001:5001"
+    volumes:
+      - "msgdata:/data/ipfs"
+      - "msgexport:/export"
+    networks:
+      - intranet
+
+volumes:
+
+  msgdata:
+  msgexport:
+
 networks:
 
   intranet:
