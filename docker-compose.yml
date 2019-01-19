@@ -50,22 +50,6 @@ services:
     networks:
       - intranet
 
-  # database:
-  #   hostname: database
-  #   image: mongo:4.0.5-xenial
-  #   ports:
-  #     - "27017:27017"
-  #   env_file:
-  #     - database.env
-  #   volumes:
-  #     - "~/notatweet/database/DATA/db:/data/db"
-  #     - "~/notatweet/database/DATA/configdb:/data/configdb"
-  #   networks:
-  #     - dbnet
-  #   deploy:
-  #     placement:
-  #       constraints: [node.role == manager]
-
   msgstore:
     hostname: msgstore
     image: ipfs/go-ipfs:release
