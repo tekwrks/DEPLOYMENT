@@ -29,7 +29,6 @@ services:
     env_file:
       - login.env
     networks:
-      - dbnet
       - webnet
       - intranet
 
@@ -39,7 +38,6 @@ services:
     env_file:
       - user.env
     networks:
-      - dbnet
       - webnet
 
   email:
@@ -48,6 +46,15 @@ services:
     env_file:
       - email.env
     networks:
+      - intranet
+
+  post:
+    hostname: post
+    image: ${REPO:?err}/post:1.0.0
+    env_file:
+      - post.env
+    networks:
+      - webnet
       - intranet
 
   msgstore:
@@ -74,8 +81,5 @@ networks:
     driver: overlay
 
   webnet:
-    driver: overlay
-
-  dbnet:
     driver: overlay
 
