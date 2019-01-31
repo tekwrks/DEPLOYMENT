@@ -20,6 +20,8 @@ services:
   renderer:
     hostname: renderer
     image: ${REPO:?err}/renderer:1.0.0
+    env_file:
+      - renderer.env
     networks:
       - intranet
 
