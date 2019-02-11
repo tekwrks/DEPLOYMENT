@@ -7,9 +7,9 @@ remoterepo=gcr.io/${project}
 .PHONY: up-local
 up-local:
 	cat website.yaml | ./substitute.sh REPO ${localrepo} | kubectl apply -f -
-	cat proxy-config.yaml | kubectl apply -f -
-	cat proxy.yaml | kubectl apply -f -
-	cat proxy-service.yaml | kubectl apply -f -
+	kubectl apply -f proxy-config.yaml && kubectl apply -f proxy.yaml
+	\
+	kubectl expose deployment proxy --type=LoadBalancer --name=cast
 
 .PHONY: down
 down:

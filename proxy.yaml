@@ -1,24 +1,28 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    io.kompose.service: proxy
   name: proxy
+  labels:
+    project: cast
 spec:
+  selector:
+    matchLabels:
+      name: proxy
+      project: cast
   replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        io.kompose.service: proxy
+        name: proxy
+        project: cast
     spec:
       containers:
       - image: nginx:mainline-alpine
         name: proxy
         ports:
         - containerPort: 80
-        resources: {}
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
