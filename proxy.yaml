@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: proxy
+  name: proxy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: proxy
+    spec:
+      containers:
+      - image: nginx:mainline-alpine
+        name: proxy
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      restartPolicy: Always
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
