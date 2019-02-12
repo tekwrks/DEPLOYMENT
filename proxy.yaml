@@ -57,10 +57,10 @@ data:
         #   proxy_pass    http://user:7000;
         # }
 
-        # # Renderer
-        # location /post {
-        #   proxy_pass    http://renderer:3000;
-        # }
+        # Renderer
+        location /post {
+          proxy_pass    http://renderer:3000;
+        }
 
         # # Post
         # location /publish {

@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: msgdata
+  labels:
+    project: cast
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: msgexport
+  labels:
+    project: cast
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msgstore
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: msgstore
+      project: cast
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: msgstore
+        project: cast
+    spec:
+      containers:
+      - image: ipfs/go-ipfs:release
+        name: msgstore
+        ports:
+        - containerPort: 4001
+        - containerPort: 5001
+        - containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /data/ipfs
+          name: msgdata
+        - mountPath: /export
+          name: msgexport
+      hostname: msgstore
+      restartPolicy: Always
+      volumes:
+      - name: msgdata
+        persistentVolumeClaim:
+          claimName: msgdata
+      - name: msgexport
+        persistentVolumeClaim:
+          claimName: msgexport
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: msgstore
+  labels:
+    project: cast
+spec:
+  selector:
+    name: msgstore
+    project: cast
+  ports:
+  - name: "4001"
+    port: 4001
+    targetPort: 4001
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  - name: "5001"
+    port: 5001
+    targetPort: 5001
