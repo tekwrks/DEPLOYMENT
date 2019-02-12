@@ -5,9 +5,7 @@ localrepo=${project}
 remoterepo=gcr.io/${project}
 
 .PHONY: up-local
-up-local:
-	for secret in secret-*.yaml; do kubectl apply -f $$secret; done
-	\
+up-local: secrets
 	cat website.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	cat email.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	kubectl apply -f msgstore.yaml
@@ -16,6 +14,10 @@ up-local:
 	\
 	kubectl expose deployment proxy --type=LoadBalancer --name=cast \
 		--port 3000 --target-port 80
+
+.PHONY:secrets
+secrets:
+	for secret in secret-*.yaml; do kubectl apply -f $$secret; done
 
 .PHONY: down
 down:
