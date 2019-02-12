@@ -1,3 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    worker_processes  1;
+    events {
+      worker_connections  1024;
+    }
+
+    http {
+      include             mime.types;
+
+      sendfile            on;
+      tcp_nopush          off;
+      keepalive_timeout   0;
+      server_tokens       off;
+
+      server {
+        listen       80;
+        server_name  localhost;
+        root         /var/www/html;
+
+        #access_log  logs/host.access.log  main;
+
+        # # Static files
+        # location /assets {
+        #   # try serving as files, then return 404
+        #   try_files $uri =404;
+        # }
+
+        # Proxy configuration
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_pass_request_body on;
+        proxy_redirect off;
+
+        proxy_hide_header X-Powered-By;
+        proxy_hide_header Server;
+        proxy_hide_header X-AspNetMvc-Version;
+        proxy_hide_header X-AspNet-Version;
+
+        # # Login
+        # location = /logout {
+        #   proxy_pass    http://login:7000;
+        # }
+        # location /auth/twitter {
+        #   proxy_pass    http://login:7000;
+        # }
+
+        # # User
+        # location /identity {
+        #   proxy_pass    http://user:7000;
+        # }
+
+        # # Renderer
+        # location /post {
+        #   proxy_pass    http://renderer:3000;
+        # }
+
+        # # Post
+        # location /publish {
+        #   proxy_pass    http://post:7000;
+        # }
+
+        # Website
+        location / {
+          proxy_pass    http://website:7000;
+        }
+      }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

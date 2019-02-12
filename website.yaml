@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: website
+      project: cast
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: website
+        project: cast
+    spec:
+      containers:
+      - image: ${REPO}/website
+        imagePullPolicy: IfNotPresent
+        name: website
+        ports:
+        - containerPort: 7000
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website
+spec:
+  ports:
+  - name: "7000"
+    port: 7000
+    targetPort: 7000
+  selector:
+    name: website
+    project: cast
