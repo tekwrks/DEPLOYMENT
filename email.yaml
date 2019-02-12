@@ -69,5 +69,22 @@ spec:
         image: ${REPO}/email
         imagePullPolicy: IfNotPresent
         name: email
+        ports:
+        - containerPort: 3000
       hostname: email
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email
+  labels:
+    project: cast
+spec:
+  selector:
+    name: email
+    project: cast
+  ports:
+  - name: "5000"
+    port: 5000
+    targetPort: 3000

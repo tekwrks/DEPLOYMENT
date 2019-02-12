@@ -59,7 +59,7 @@ data:
 
         # Renderer
         location /post {
-          proxy_pass    http://renderer:3000;
+          proxy_pass    http://renderer:7000;
         }
 
         # # Post
