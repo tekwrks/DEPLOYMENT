@@ -8,8 +8,11 @@ remoterepo=gcr.io/${project}
 up-local: secrets
 	cat website.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	cat email.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
+	cat login.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
+	\
 	kubectl apply -f msgstore.yaml
 	cat renderer.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
+	\
 	kubectl apply -f proxy.yaml
 	\
 	kubectl expose deployment proxy --type=LoadBalancer --name=cast \
@@ -21,5 +24,5 @@ secrets:
 
 .PHONY: down
 down:
-	kubectl delete daemonsets,replicasets,services,deployments,pods,rc --all
+	kubectl delete daemonsets,replicasets,services,deployments,pods,rc,secrets --all
 

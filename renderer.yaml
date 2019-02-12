@@ -5,7 +5,7 @@ data:
   DPI: "72"
   FONTFILE: fonts/NotoSans-Regular.ttf
   IPFS_ADDRESS: localhost:5001
-  ROOT_URL: http://localhost
+  ROOT_URL: http://localhost:3000
 kind: ConfigMap
 metadata:
   name: renderer-env

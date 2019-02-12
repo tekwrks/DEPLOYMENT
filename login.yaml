@@ -26,8 +26,8 @@ spec:
   replicas: 1
   template:
     metadata:
-      name: login
       labels:
+        name: login
         project: cast
     spec:
       containers:
