@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: login-env
+  labels:
+    project: cast
+data:
+  PROGRAM_ALIAS: login
+  NODE_ENV: production
+  PORT: "7000"
+  LOG_LEVEL: debug
+  LOG_FILE: "false"
+  EMAILER_ADDRESS: email:5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: login
+      project: cast
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: login
+        project: cast
+    spec:
+      containers:
+      - env:
+        - name: PROGRAM_ALIAS
+          valueFrom:
+            configMapKeyRef:
+              key: PROGRAM_ALIAS
+              name: login-env
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: login-env
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PORT
+              name: login-env
+        - name: LOG_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_FILE
+              name: login-env
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_LEVEL
+              name: login-env
+        - name: EMAILER_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: EMAILER_ADDRESS
+              name: login-env
+        - name: COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cookie
+              key: secret
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: name
+        - name: DATABASE_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: address
+        - name: DATABASE_OPTIONS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: options
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: user
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: password
+        - name: TWITTER_CONSUMER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: twitter
+              key: consumer-key
+        - name: TWITTER_CONSUMER_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: twitter
+              key: consumer-secret
+        - name: TWITTER_CALLBACK_URL
+          valueFrom:
+            secretKeyRef:
+              name: twitter
+              key: callback
+        image: ${REPO}/login
+        imagePullPolicy: IfNotPresent
+        name: login
+        ports:
+        - containerPort: 7000
+      hostname: login
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login
+  labels:
+    project: cast
+spec:
+  selector:
+    name: login
+    project: cast
+  ports:
+  - name: "7000"
+    port: 7000
+    targetPort: 7000

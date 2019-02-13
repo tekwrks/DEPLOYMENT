@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: email-env
+  labels:
+    project: cast
+data:
+  PROGRAM_ALIAS: email
+  NODE_ENV: production
+  PORT: "3000"
+  LOG_LEVEL: debug
+  LOG_FILE: "false"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: email
+      project: cast
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: email
+        project: cast
+    spec:
+      containers:
+      - env:
+        - name: PROGRAM_ALIAS
+          valueFrom:
+            configMapKeyRef:
+              key: PROGRAM_ALIAS
+              name: email-env
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: email-env
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PORT
+              name: email-env
+        - name: LOG_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_FILE
+              name: email-env
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_LEVEL
+              name: email-env
+        - name: MAILGUN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mailgun
+              key: api-key
+        - name: MAILGUN_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: mailgun
+              key: domain
+        image: ${REPO}/email
+        imagePullPolicy: IfNotPresent
+        name: email
+        ports:
+        - containerPort: 3000
+      hostname: email
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email
+  labels:
+    project: cast
+spec:
+  selector:
+    name: email
+    project: cast
+  ports:
+  - name: "5000"
+    port: 5000
+    targetPort: 3000
