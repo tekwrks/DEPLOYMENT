@@ -86,7 +86,7 @@ spec:
             secretKeyRef:
               name: users
               key: password
-        image: ${REPO}/user:1.0.0
+        image: ${REPO}/user
         imagePullPolicy: IfNotPresent
         name: user
         ports:

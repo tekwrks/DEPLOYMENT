@@ -26,5 +26,5 @@ secrets:
 
 .PHONY: down
 down:
-	kubectl delete daemonsets,replicasets,services,deployments,pods,rc,secrets --all
+	kubectl delete daemonsets,replicasets,services,deployments,pods,rc --all
 
