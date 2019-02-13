@@ -62,10 +62,10 @@ data:
           proxy_pass    http://renderer:7000;
         }
 
-        # # Post
-        # location /publish {
-        #   proxy_pass    http://post:7000;
-        # }
+        # Post
+        location /publish {
+          proxy_pass    http://post:7000;
+        }
 
         # Website
         location / {

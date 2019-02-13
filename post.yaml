@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: post-env
+  labels:
+    project: cast
+data:
+  PROGRAM_ALIAS: post
+  NODE_ENV: production
+  PORT: "7000"
+  LOG_FILE: "false"
+  LOG_LEVEL: debug
+  IPFS_ADDRESS: msgstore
+  IPFS_PORT: "5001"
+  IPFS_PROTOCOL: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: post
+      project: cast
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: post
+        project: cast
+    spec:
+      containers:
+      - env:
+        - name: PROGRAM_ALIAS
+          valueFrom:
+            configMapKeyRef:
+              key: PROGRAM_ALIAS
+              name: post-env
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: post-env
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PORT
+              name: post-env
+        - name: LOG_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_FILE
+              name: post-env
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_LEVEL
+              name: post-env
+        - name: COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cookie
+              key: secret
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: name
+        - name: DATABASE_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: address
+        - name: DATABASE_OPTIONS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: options
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: user
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: password
+        - name: IPFS_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: IPFS_ADDRESS
+              name: post-env
+        - name: IPFS_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: IPFS_PORT
+              name: post-env
+        - name: IPFS_PROTOCOL
+          valueFrom:
+            configMapKeyRef:
+              key: IPFS_PROTOCOL
+              name: post-env
+        image: ${REPO}/post
+        imagePullPolicy: IfNotPresent
+        name: post
+        ports:
+        - containerPort: 7000
+      hostname: post
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post
+  labels:
+    project: cast
+spec:
+  ports:
+  - name: "7000"
+    port: 7000
+    targetPort: 7000
+  selector:
+    name: post
+    project: cast
