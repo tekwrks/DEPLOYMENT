@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-env
+  labels:
+    project: cast
+data:
+  PROGRAM_ALIAS: user
+  NODE_ENV: production
+  PORT: "7000"
+  LOG_FILE: "false"
+  LOG_LEVEL: debug
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: user
+      project: cast
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: user
+        project: cast
+    spec:
+      containers:
+      - env:
+        - name: PROGRAM_ALIAS
+          valueFrom:
+            configMapKeyRef:
+              key: PROGRAM_ALIAS
+              name: user-env
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: user-env
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PORT
+              name: user-env
+        - name: LOG_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_FILE
+              name: user-env
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_LEVEL
+              name: user-env
+        - name: COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cookie
+              key: secret
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: name
+        - name: DATABASE_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: address
+        - name: DATABASE_OPTIONS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: options
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: user
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: password
+        image: ${REPO}/user:1.0.0
+        imagePullPolicy: IfNotPresent
+        name: user
+        ports:
+        - containerPort: 7000
+      hostname: user
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  labels:
+    project: cast
+spec:
+  ports:
+  - name: "7000"
+    port: 7000
+    targetPort: 7000
+  selector:
+    name: user
+    project: cast

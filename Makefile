@@ -9,6 +9,7 @@ up-local: secrets
 	cat website.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	cat email.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	cat login.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
+	cat user.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	cat post.yaml | sed -e "s/\$${REPO}/${localrepo}/g" | kubectl apply -f -
 	\
 	kubectl apply -f msgstore.yaml

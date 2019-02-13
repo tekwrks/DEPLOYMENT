@@ -52,10 +52,10 @@ data:
           proxy_pass    http://login:7000;
         }
 
-        # # User
-        # location /identity {
-        #   proxy_pass    http://user:7000;
-        # }
+        # User
+        location /identity {
+          proxy_pass    http://user:7000;
+        }
 
         # Renderer
         location /post {
