@@ -69,6 +69,11 @@ spec:
             secretKeyRef:
               name: users
               key: name
+        - name: DATABASE_PROTOCOL
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: protocol
         - name: DATABASE_ADDRESS
           valueFrom:
             secretKeyRef:
@@ -104,7 +109,7 @@ spec:
             configMapKeyRef:
               key: IPFS_PROTOCOL
               name: post-env
-        image: ${REPO}/post
+        image: ${REPO}/post:latest
         imagePullPolicy: IfNotPresent
         name: post
         ports:

@@ -72,6 +72,11 @@ spec:
             secretKeyRef:
               name: users
               key: name
+        - name: DATABASE_PROTOCOL
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: protocol
         - name: DATABASE_ADDRESS
           valueFrom:
             secretKeyRef:
@@ -107,7 +112,7 @@ spec:
             secretKeyRef:
               name: twitter
               key: callback
-        image: ${REPO}/login
+        image: ${REPO}/login:latest
         imagePullPolicy: IfNotPresent
         name: login
         ports:
