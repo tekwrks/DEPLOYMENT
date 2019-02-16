@@ -6,10 +6,10 @@ metadata:
     project: cast
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 1Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -19,7 +19,7 @@ metadata:
     project: cast
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: 100Mi
@@ -46,12 +46,12 @@ spec:
     spec:
       containers:
       - image: ipfs/go-ipfs:release
+        imagePullPolicy: IfNotPresent
         name: msgstore
         ports:
         - containerPort: 4001
         - containerPort: 5001
         - containerPort: 8080
-        resources: {}
         volumeMounts:
         - mountPath: /data/ipfs
           name: msgdata
