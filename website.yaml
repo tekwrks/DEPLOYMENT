@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: IfNotPresent
         name: website
         ports:
-        - containerPort: 7000
+        - containerPort: 80
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -32,7 +32,7 @@ spec:
   ports:
   - name: "7000"
     port: 7000
-    targetPort: 7000
+    targetPort: 80
   selector:
     name: website
     project: cast
