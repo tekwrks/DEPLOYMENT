@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: publish-env
+  labels:
+    project: cast
+data:
+  PROGRAM_ALIAS: publish
+  ADDRESS: :3000
+  POST_URL: https://cast.multipl.io/post/
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publish
+  labels:
+    project: cast
+spec:
+  selector:
+    matchLabels:
+      name: publish
+      project: cast
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: publish
+        project: cast
+    spec:
+      containers:
+      - env:
+        - name: PROGRAM_ALIAS
+          valueFrom:
+            configMapKeyRef:
+              key: PROGRAM_ALIAS
+              name: publish-env
+        - name: ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: ADDRESS
+              name: publish-env
+        - name: POST_URL
+          valueFrom:
+            configMapKeyRef:
+              key: POST_URL
+              name: publish-env
+        - name: TWITTER_CONSUMER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: twitter
+              key: consumer-key
+        - name: TWITTER_CONSUMER_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: twitter
+              key: consumer-secret
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: name
+        - name: DATABASE_PROTOCOL
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: protocol
+        - name: DATABASE_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: address
+        - name: DATABASE_OPTIONS
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: options
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: user
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: users
+              key: password
+        image: ${REPO}/publish:latest
+        imagePullPolicy: IfNotPresent
+        name: publish
+        ports:
+        - containerPort: 3000
+      hostname: publish
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: publish
+  labels:
+    project: cast
+spec:
+  ports:
+  - name: "5000"
+    port: 5000
+    targetPort: 3000
+  selector:
+    name: publish
+    project: cast
