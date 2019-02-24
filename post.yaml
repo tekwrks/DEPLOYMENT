@@ -13,6 +13,7 @@ data:
   IPFS_ADDRESS: msgstore
   IPFS_PORT: "5001"
   IPFS_PROTOCOL: http
+  PUBLISHER_ADDRESS: publish:5000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -108,6 +109,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: IPFS_PROTOCOL
+              name: post-env
+        - name: PUBLISHER_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: PUBLISHER_ADDRESS
               name: post-env
         image: ${REPO}/post:latest
         imagePullPolicy: IfNotPresent

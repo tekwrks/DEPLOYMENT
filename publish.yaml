@@ -7,7 +7,7 @@ metadata:
 data:
   PROGRAM_ALIAS: publish
   ADDRESS: :3000
-  POST_URL: https://cast.multipl.io/post/
+  POST_URL: http://localhost:3000/post/
 ---
 apiVersion: apps/v1
 kind: Deployment
