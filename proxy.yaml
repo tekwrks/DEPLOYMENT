@@ -27,6 +27,12 @@ data:
         server_name  localhost;
         root         /var/www/html;
 
+        # readiness probe
+        location = /ready {
+          add_header Content-Type text/plain;
+          return 200 'ok';
+        }
+
         # Proxy configuration
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -82,7 +88,12 @@ spec:
     matchLabels:
       name: proxy
       project: cast
-  replicas: 1
+  replicas: 2
+  strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
   strategy:
     type: Recreate
   template:
@@ -100,6 +111,13 @@ spec:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
       restartPolicy: Always
       volumes:
       - name: nginx-config
