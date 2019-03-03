@@ -22,10 +22,10 @@ spec:
       project: cast
   replicas: 2
   strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 1
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -98,9 +98,9 @@ spec:
           httpGet:
             path: /ready
             port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
       hostname: publish
       restartPolicy: Always
 ---

@@ -29,6 +29,9 @@ data:
 
         # readiness probe
         location = /ready {
+          # do not log healthchecks
+          access_log off;
+
           add_header Content-Type text/plain;
           return 200 'ok';
         }
@@ -90,10 +93,10 @@ spec:
       project: cast
   replicas: 2
   strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 1
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   strategy:
     type: Recreate
   template:
@@ -115,9 +118,9 @@ spec:
           httpGet:
             path: /ready
             port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
       restartPolicy: Always
       volumes:
       - name: nginx-config

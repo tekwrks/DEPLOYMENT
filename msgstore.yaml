@@ -61,9 +61,9 @@ spec:
           httpGet:
             path: /api/v0/block/get?arg=QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG
             port: 5001
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
       hostname: msgstore
       restartPolicy: Always
       volumes:
